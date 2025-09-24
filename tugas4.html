@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Transportasi - Pelanggan</title>
+    <style>
+        /* CSS Sederhana untuk tampilan lebih rapi */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        form { margin-bottom: 20px; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        #hasilDaftar { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 4px; }
+        .pelanggan-item { margin: 10px 0; padding: 10px; background: white; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistem Manajemen Transportasi</h1>
+        <p>Manajemen Pelanggan Penyewa Kendaraan menggunakan OOP JavaScript</p>
+
+        <!-- Form untuk Tambah Pelanggan -->
+        <h2>Tambah Pelanggan Baru</h2>
+        <form id="formPelanggan">
+            <label for="namaInput">Nama Pelanggan:</label>
+            <input type="text" id="namaInput" placeholder="Masukkan nama" required>
+
+            <label for="teleponInput">Nomor Telepon:</label>
+            <input type="tel" id="teleponInput" placeholder="Masukkan nomor telepon" required>
+
+            <button type="submit">Tambah Pelanggan</button>
+        </form>
+
+        <!-- Form untuk Sewa Kendaraan -->
+        <h2>Sewa Kendaraan</h2>
+        <form id="formSewa">
+            <label for="pelangganSelect">Pilih Pelanggan:</label>
+            <select id="pelangganSelect" required>
+                <option value="">-- Pilih Pelanggan --</option>
+            </select>
+
+            <label for="kendaraanInput">Kendaraan yang Disewa:</label>
+            <input type="text" id="kendaraanInput" placeholder="Misal: Mobil Sedan ABC-123" required>
+
+            <button type="submit">Sewa Kendaraan</button>
+        </form>
+
+        <!-- Tombol Tampilkan Daftar -->
+        <button id="btnTampilkan">Tampilkan Daftar Pelanggan Menyewa</button>
+
+        <!-- Area Hasil Daftar -->
+        <div id="hasilDaftar">
+            <h3>Daftar Pelanggan yang Sedang Menyewa</h3>
+            <p>Klik tombol di atas untuk melihat daftar.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript OOP - Embed di sini -->
+    <script>
+        // ============================================
+        // SISTEM MANAJEMEN TRANSPORTASI - MANAJEMEN PELANGGAN
+        // Dibuat oleh: [Nama Kamu]
+        // Tanggal: [Tanggal Hari Ini]
+        // Deskripsi: Sistem OOP JS diintegrasikan ke HTML untuk interaksi web.
+        // ============================================
+
+        // Class Pelanggan - Sama seperti sebelumnya
+        class Pelanggan {
+            constructor(nama, nomorTelepon) {
+                this.nama = nama;
+                this.nomorTelepon = nomorTelepon;
+                this.kendaraanDisewa = null;
+            }
+
+            sewaKendaraan(kendaraan) {
+                if (this.kendaraanDisewa === null) {
+                    this.kendaraanDisewa = kendaraan;
+                    return `Transaksi berhasil: ${this.nama} telah menyewa ${kendaraan}`;
+                } else {
+                    return `Maaf, ${this.nama} sudah menyewa ${this.kendaraanDisewa}. Batal sewa baru.`;
+                }
+            }
+
+            getInfo() {
+                if (this.kendaraanDisewa) {
+                    return `${this.nama} (Tel: ${this.nomorTelepon}) - Menyewa: ${this.kendaraanDisewa}`;
+                } else {
+                    return `${this.nama} (Tel: ${this.nomorTelepon}) - Belum menyewa kendaraan`;
+                }
+            }
+
+            kembalikanKendaraan() {
+                if (this.kendaraanDisewa !== null) {
+                    let kendaraan = this.kendaraanDisewa;
+                    this.kendaraanDisewa = null;
+                    return `Kendaraan ${kendaraan} dikembalikan oleh ${this.nama}`;
+                } else {
+                    return `${this.nama} tidak sedang menyewa kendaraan.`;
+                }
+            }
+        }
+
+        // Array global daftarPelanggan
+        let daftarPelanggan = [];
+
+        // Fungsi untuk tambah pelanggan (dari form)
+        function tambahPelanggan(nama, nomorTelepon) {
+            let pelanggan = new Pelanggan(nama, nomorTelepon);
+            daftarPelanggan.push(pelanggan);
+            updateDropdownPelanggan(); // Update select dropdown
+            return `Pelanggan ${nama} ditambahkan ke sistem.`;
+        }
+
+        // Fungsi untuk update dropdown pelanggan (tampilkan semua pelanggan di select)
+        function updateDropdownPelanggan() {
+            let select = document.getElementById('pelangganSelect');
+            select.innerHTML = '<option value="">-- Pilih Pelanggan --</option>';
+            daftarPelanggan.forEach((pelanggan, index) => {
+                let option = document.createElement('option');
+                option.value = index; // Index sebagai value untuk identifikasi
+                option.textContent = pelanggan.nama;
+                select.appendChild(option);
+            });
+        }
+
+        // Fungsi tampilkan daftar menyewa (update div hasil)
+        function tampilkanPelangganMenyewa() {
+            let hasilDiv = document.getElementById('hasilDaftar');
+            let pelangganMenyewa = daftarPelanggan.filter(pelanggan => pelanggan.kendaraanDisewa !== null);
+            
+            if (pelangganMenyewa.length === 0) {
+                hasilDiv.innerHTML = '<h3>Daftar Pelanggan yang Sedang Menyewa</h3><p>Tidak ada pelanggan yang sedang menyewa kendaraan.</p>';
+            } else {
+                let html = '<h3>Daftar Pelanggan yang Sedang Menyewa</h3>';
+                pelangganMenyewa.forEach(pelanggan => {
+                    html += `<div class="pelanggan-item">${pelanggan.getInfo()}</div>`;
+                });
+                hasilDiv.innerHTML = html;
+            }
+        }
+
+        // Event Listener untuk Form Tambah Pelanggan
+        document.getElementById('formPelanggan').addEventListener('submit', function(e) {
+            e.preventDefault(); // Cegah reload halaman
+            let nama = document.getElementById('namaInput').value;
+            let telepon = document.getElementById('teleponInput').value;
+            if (nama && telepon) {
+                let pesan = tambahPelanggan(nama, telepon);
+                alert(pesan); // Tampilkan pesan sukses
+                document.getElementById('formPelanggan').reset(); // Reset form
+            }
+        });
+
+        // Event Listener untuk Form Sewa Kendaraan
+        document.getElementById('formSewa').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let indexPelanggan = document.getElementById('pelangganSelect').value;
+            let kendaraan = document.getElementById('kendaraanInput').value;
+            if (indexPelanggan !== '' && kendaraan) {
+                let pelanggan = daftarPelanggan[indexPelanggan];
+                let pesan = pelanggan.sewaKendaraan(kendaraan);
+                alert(pesan);
+                document.getElementById('formSewa').reset();
+                updateDropdownPelanggan(); // Update dropdown jika perlu
+            } else {
+                alert('Pilih pelanggan dan isi kendaraan!');
+            }
+        });
+
+        // Event Listener untuk Tombol Tampilkan Daftar
+        document.getElementById('btnTampilkan').addEventListener('click', function() {
+            tampilkanPelangganMenyewa();
+        });
+
+        // Inisialisasi: Update dropdown awal (kosong)
+        updateDropdownPelanggan();
+    </script>
+</body>
+</html>
